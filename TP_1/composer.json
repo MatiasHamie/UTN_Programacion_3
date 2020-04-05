@@ -1,0 +1,6 @@
+{
+    "name": "TP1_Lab3",
+    "require": {
+        "namnv609/php-rest-countries" : "*"
+    }   
+}
