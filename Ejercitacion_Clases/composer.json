@@ -1,0 +1,11 @@
+{
+    "name": "mnhamie/ejercitacion_clases",
+    "description": "Ejercicios realizados en clase",
+    "authors": [
+        {
+            "name": "MatiasHamie",
+            "email": "mnhamie@gmail.com"
+        }
+    ],
+    "require": {}
+}

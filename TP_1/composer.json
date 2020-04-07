@@ -1,6 +1,13 @@
 {
-    "name": "TP1_Lab3",
+    "name": "mhamie/tp1php",
+    "description": "TP numero 1 de la materia Programacion 3 del lenguaje PHP",
+    "authors": [
+        {
+            "name": "MatiasHamie",
+            "email": "mnhamie@gmail.com"
+        }
+    ],
     "require": {
-        "namnv609/php-rest-countries" : "*"
-    }   
+        "namnv609/php-rest-countries": "^1.0"
+    }
 }
