@@ -1,0 +1,13 @@
+{
+    "name": "mnhamie/tp_2",
+    "description": "TP2 de la materia Programacion 3, practica de autenticación por JWT",
+    "authors": [
+        {
+            "name": "MatiasHamie",
+            "email": "mnhamie@gmail.com"
+        }
+    ],
+    "require": {
+        "firebase/php-jwt": "^5.2"
+    }
+}
