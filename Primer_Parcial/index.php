@@ -50,6 +50,8 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
                                 $respuesta = Response::JsendResponse("Fail", "No existe esa combinacion de pizza");
                             }
                             echo $respuesta;
+                        } else {
+                            echo Response::JsendResponse("Fail", "El usuario no es cliente para poder vender");
                         }
                         break;
 
