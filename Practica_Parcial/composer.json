@@ -1,0 +1,14 @@
+{
+    "name": "mnhamie/parcial",
+    "description": "Practica del primer parcial de Laboratorio 3",
+    "authors": [
+        {
+            "name": "MatiasHamie",
+            "email": "mnhamie@gmail.com"
+        }
+    ],
+    "require": {
+        "firebase/php-jwt": "^5.2",
+        "ajaxray/php-watermark": "^0.1.1"
+    }
+}
