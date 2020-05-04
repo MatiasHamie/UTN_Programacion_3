@@ -31,6 +31,8 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
                             } else {
                                 echo Gestion_Productos::RegistrarProducto($directorio_productos, $_POST);
                             }
+                        } else {
+                            echo Response::JsendResponse("Fail", "Debe ser encargado");
                         }
                         break;
                     case '/ventas':

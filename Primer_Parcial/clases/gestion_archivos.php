@@ -202,11 +202,11 @@ class Gestion_Archivos
             return Response::JsendResponse("success", array("Monto total operaciones" => "ARS" . $monto_total,"Ventas_Realizadas" => $ventas_leidas));
         }
         foreach ($ventas_leidas as $key => $venta_leida) {
-            if ($venta_leida->usuario == $usuario) {
+            if ($venta_leida->email == $usuario->email) {
                 array_push($array_ventas_usuario, $venta_leida); 
             }
         }
 
-        return Response::JsendResponse("success", array("Ventas_de_". $usuario->nombre => $ventas_leidas));
+        return Response::JsendResponse("success", array("Ventas_de_" . $usuario->email => $ventas_leidas));
     }
 }
