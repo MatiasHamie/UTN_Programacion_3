@@ -37,7 +37,7 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
                         break;
                     case '/ventas':
                         $usuario = Gestion_Usuarios::getUser(getallheaders(), $key);
-                        if (!!Gestion_Usuarios::EsEncargado($usuario)) {
+                        if (!Gestion_Usuarios::EsEncargado($usuario)) {
                             $pizza = Gestion_Productos::GetPizza($directorio_productos, $_POST['tipo'], $_POST['sabor']);
                             if($pizza != null){
                                 $respuesta = Gestion_Productos::VenderProducto($directorio_productos, $pizza->tipo, $pizza->sabor);
