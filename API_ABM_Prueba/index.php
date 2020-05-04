@@ -12,6 +12,7 @@
 require_once __DIR__ . "./clases/persona.php";
 require_once __DIR__ . "./clases/auto.php";
 require_once __DIR__ . "./clases/empresa.php";
+require_once __DIR__ . "./archivos/leer.php";
 
 echo "-- TP API ABM -- <br><br>";
 
@@ -36,11 +37,15 @@ switch ($pathInfo) {
             if (isset($request['nombre']) && isset($request['edad'])) {
                 echo "Seteando persona<br>";
                 $persona = new Persona($request['nombre'],$request['edad']);
+                $persona->EscribirArchivo();
                 echo "Persona generada: <br>" . json_encode($persona->getInfo());
             }
         }
         elseif ($requestType == 'GET') {
-            //
+            // if (isset($request['nombre']) && isset($request['edad'])) {
+                $persona = new Persona();
+                echo "Personas leidas del archivo de texto: <br>" . json_encode($persona->LeerArchivo());
+            // }
         }
         else {
             # code...
