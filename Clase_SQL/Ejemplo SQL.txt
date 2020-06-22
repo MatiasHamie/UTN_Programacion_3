@@ -1,0 +1,4 @@
+SELECT a.id, a.alumno, a.legajo, l.localidad, c.nombre
+FROM `alumnos` a
+INNER JOIN localidades l on a.localidad = l.id
+INNER JOIN cuatrimestres c on a.cuatrimestre = c.id

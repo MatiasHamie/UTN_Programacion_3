@@ -1,0 +1,13 @@
+{
+    "name": "mnham/practicando_slim",
+    "authors": [
+        {
+            "name": "MatiasHamie",
+            "email": "mnhamie@gmail.com"
+        }
+    ],
+    "require": {
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.1"
+    }
+}
