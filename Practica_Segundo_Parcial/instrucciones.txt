@@ -1,0 +1,45 @@
+
+/*
+    -Practicando Skeleton-
+    Como siempre composer init y agregamos el require del autoload.php
+    Pasos a seguir:
+    --- Instalación ---
+    1- Instalar todas las dependencias del composer.json
+        con composer install / composer update
+        - Creamos carpetas:
+            -> config
+            -> public y adentro los archivos
+                ->index.php
+                ->.htaccess, con lo siguiente:
+                    RewriteEngine On
+                    RewriteCond %{REQUEST_FILENAME} !-f
+                    RewriteCond %{REQUEST_FILENAME} !-d
+                    RewriteRule ^ index.php[QSA,L]
+            -> src, src/controllers, src/middlewares, src/models, src/utils
+                -> adentro de src/models ponemos los *.php de las entidades
+                   como alumno, auto, etc.
+            -> utils
+    --- Namespace ---
+    2- Agregar los namespace al composer.json segun
+        se desee
+        "Nombre deseado del namespace\\":"carpeta"
+            , //No olvidarse la coma !
+            "autoload": {
+                "psr-4": {
+                    "App\\":"src",
+                    "Config\\":"config"
+                }
+            }
+    -> Escribir en terminal composer dumpautoload -o para compilar
+    -> Agregar a cada archivo.php el namespace deseado
+        -> vamos a alumno.php y ponemos 
+            namespace App\Models;
+    -> En index.php ponemos el use + namespace + archivo.php
+         Ejemplo: App\Models\nombrearchivo.php (sin el .php)
+                  App\Models\otronombre\nombrearchivo.php (idem arriba)
+    Ahora en el index.php no va require, usamos use namespace;
+
+    --- Bootstrap ---
+    3- Archivo de configuracion de la aplicacion, va ubicado en config/bootstrap.php
+    Aca configuramos el servidor slim y lo devolvemos, no le hacemos el $app->run();
+*/
