@@ -14,22 +14,33 @@ class UsuariosController {
 
     public function registro(Request $request, Response $response, $args){
         $usuario = new Usuario();
-        $usuario = ValidarPost::RegistroUsuario($usuario, $_POST);
-        $rta = RtaJsend::JsendResponse('Registro Usuario',(($usuario->save()) ? 'ok' : 'error'));
+
+        $datosARegistrar = $request->getParsedBody() ?? [];
+
+        if(empty($datosARegistrar)){
+            $rta = RtaJsend::JsendResponse('Registro Usuario ERROR','No se recibieron datos para registrar');
+        } else {
+            $usuario = ValidarPost::RegistroUsuario($usuario, $datosARegistrar);
+            $rta = RtaJsend::JsendResponse('Registro Usuario',(($usuario->save()) ? 'ok' : 'error'));
+        }
         $response->getBody()->write($rta);
         return $response;
     }
 
     public function login(Request $request, Response $response, $args){
-        $email_recibido = $_POST['email'] ?? '';
-        $password_recibido = $_POST['password'] ?? '';
 
-        if(($email_recibido != '') && $password_recibido != '') {
-            $usuario_leidoSQL = Usuario::all()->where('email',$email_recibido)->first();
-            $rta = ValidarPost::LoginUsuario($usuario_leidoSQL, $password_recibido);
-        }
+        $datosAValidar = $request->getParsedBody() ?? [];
         
-
+        if(empty($datosAValidar)){  
+            $rta = RtaJsend::JsendResponse('LOGIN Usuario ERROR','No se recibieron datos para loguear');
+        } else {
+            $email_recibido = $datosAValidar['email'];
+            $password_recibido = $datosAValidar['password'];
+            if(($email_recibido != '') && $password_recibido != '') {
+                $usuario_leidoSQL = Usuario::all()->where('email',$email_recibido)->first();
+                $rta = ValidarPost::LoginUsuario($usuario_leidoSQL, $password_recibido);
+            }
+        }
         $response->getBody()->write($rta);
         return $response;
     }

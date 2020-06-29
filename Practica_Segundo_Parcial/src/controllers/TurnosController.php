@@ -17,66 +17,73 @@ class TurnosController {
     public function registrarTurno(Request $request, Response $response, $args){
         $turno = new Turno();
 
-        $turno->mascota_id = $_POST['id_mascota'];
-        $turno->veterinario_id = $_POST['id_veterinario'];
-        $turno->fecha = $_POST['fecha'];
+        $datosARegistrar = $request->getParsedBody();
 
-        // Horas de cierre y apertura del local
-        $horaApertura = new \DateTime('09:00');
-        $horaCierre = new \DateTime('17:00');
-        $horaApertura = $horaApertura->format('H:i');
-        $horaCierre = $horaCierre->format('H:i');
-
-        // $horaRecibida = $_POST['hora'];
-        $horarioIngresadoPorCliente = new \DateTime($_POST['hora']);
-        $turno->hora = $horarioIngresadoPorCliente->format('H:i');
-        $horasIngresadoPorCliente = $horarioIngresadoPorCliente->format("H");
-        $minutosIngresadoPorCliente = $horarioIngresadoPorCliente->format("i");
-
-        // El turno no esta disponible hasta que se verifique que hay mas de 30 minutos en turnos para ese veterinario
-        $disponibilidadTurno = false;
-
-        // Me fijo si esta cerrado el local a esa hora que pide el cliente
-        if(($horasIngresadoPorCliente < 9) || ($horasIngresadoPorCliente >= 17)){
-            $rta = RtaJsend::JsendResponse('fail', 'Local Cerrado, horario de '. $horaApertura.' a '.$horaCierre.' hrs.');
+        if(empty($datosARegistrar)){
+            $rta = RtaJsend::JsendResponse('Registro Turno ERROR','No se recibieron datos para registrar');
         } else {
-            // Me traigo todos los turnos que coincidan con la fecha ingresada por el cliente, idem con el id veterinario
-            $turnosRegistradosSQL = Turno::all()->where('fecha',$turno->fecha)->where('veterinario_id',$turno->veterinario_id);
+            $turno->mascota_id = $datosARegistrar[id_mascota] ?? '';
+            $turno->veterinario_id = $datosARegistrar['id_veterinario'] ?? '';
+            $turno->fecha = $datosARegistrar['fecha'] ?? '';
+            $turno->hora = $datosARegistrar['hora'] ?? '';
+    
+            if($turno->mascota_id != '' && $turno->veterinario_id != '' && $turno->fecha != '' && $turno->hora != ''){
+                // Horas de cierre y apertura del local
+                $horaApertura = new \DateTime('09:00');
+                $horaCierre = new \DateTime('17:00');
+                $horaApertura = $horaApertura->format('H:i');
+                $horaCierre = $horaCierre->format('H:i');
 
-            // Si no hay turnos registrados ese dia, doy la disponibilidad de turno ok
-            if(empty($turnosRegistradosSQL[0])){
-                $disponibilidadTurno = true;
-            } else {
-                // Recorro los turnos del SQL
-                foreach ($turnosRegistradosSQL as $indice => $turnoLeidoSQL) {
-                    // Transformo la fecha del turno leido del SQL a objeto DateTime
-                    $horaTurnoSQL = new \DateTime($turnoLeidoSQL['hora']);
-                    // Aca uso % adelante de la H o i porque es tipo DateInterval, si es tipo DateTime lo uso sin el %
-                    $horasDeDiferencia = $horaTurnoSQL->diff($horarioIngresadoPorCliente)->format("%H");
-                    $minutosDeDiferencia = $horaTurnoSQL->diff($horarioIngresadoPorCliente)->format("%I");
-                    // Veo si hay mas de 1 de diferencia
-                    if($horasDeDiferencia > 0 || $horasDeDiferencia < 0){
-                        // Hay mas de 1 hr de diferencia, turno disponible
+                $horarioIngresadoPorCliente = new \DateTime($turno->hora);
+                $turno->hora = $horarioIngresadoPorCliente->format('H:i');
+                $horasIngresadoPorCliente = $horarioIngresadoPorCliente->format("H");
+                $minutosIngresadoPorCliente = $horarioIngresadoPorCliente->format("i");
+
+                // El turno no esta disponible hasta que se verifique que hay mas de 30 minutos en turnos para ese veterinario
+                $disponibilidadTurno = false;
+
+                // Me fijo si esta cerrado el local a esa hora que pide el cliente
+                if(($horasIngresadoPorCliente < 9) || ($horasIngresadoPorCliente >= 17)){
+                    $rta = RtaJsend::JsendResponse('fail', 'Local Cerrado, horario de '. $horaApertura.' a '.$horaCierre.' hrs.');
+                } else {
+                    // Me traigo todos los turnos que coincidan con la fecha ingresada por el cliente, idem con el id veterinario
+                    $turnosRegistradosSQL = Turno::all()->where('fecha',$turno->fecha)->where('veterinario_id',$turno->veterinario_id);
+
+                    // Si no hay turnos registrados ese dia, doy la disponibilidad de turno ok
+                    if(empty($turnosRegistradosSQL[0])){
                         $disponibilidadTurno = true;
                     } else {
-                        // Si no hay diferencia de horas tengo que ver los minutos
-                        if($minutosDeDiferencia >= 30){
-                            // Si hay mas de 30 minutos el turno se vuelve disponible
-                            $disponibilidadTurno = true;
-                        } else {
-                            // No hay 30 minutos de diferencia
-                            $rta = RtaJsend::JsendResponse('fail', 'Diferencia menor a 30 minutos entre turnos');
-                            $disponibilidadTurno = false;
-                        }    
+                        // Recorro los turnos del SQL
+                        foreach ($turnosRegistradosSQL as $indice => $turnoLeidoSQL) {
+                            // Transformo la fecha del turno leido del SQL a objeto DateTime
+                            $horaTurnoSQL = new \DateTime($turnoLeidoSQL['hora']);
+                            // Aca uso % adelante de la H o i porque es tipo DateInterval, si es tipo DateTime lo uso sin el %
+                            $horasDeDiferencia = $horaTurnoSQL->diff($horarioIngresadoPorCliente)->format("%H");
+                            $minutosDeDiferencia = $horaTurnoSQL->diff($horarioIngresadoPorCliente)->format("%I");
+                            // Veo si hay mas de 1 de diferencia
+                            if($horasDeDiferencia > 0 || $horasDeDiferencia < 0){
+                                // Hay mas de 1 hr de diferencia, turno disponible
+                                $disponibilidadTurno = true;
+                            } else {
+                                // Si no hay diferencia de horas tengo que ver los minutos
+                                if($minutosDeDiferencia >= 30){
+                                    // Si hay mas de 30 minutos el turno se vuelve disponible
+                                    $disponibilidadTurno = true;
+                                } else {
+                                    // No hay 30 minutos de diferencia
+                                    $rta = RtaJsend::JsendResponse('fail', 'Diferencia menor a 30 minutos entre turnos');
+                                    $disponibilidadTurno = false;
+                                }    
+                            }
+                        }
                     }
-                }
+                } 
             }
-        } 
-
-        if($disponibilidadTurno == true){
-            $rta = RtaJsend::JsendResponse('success',($turno->save()) ? 'Registro turno ok' : 'Fallo');
+            
+            if($disponibilidadTurno == true){
+                $rta = RtaJsend::JsendResponse('success',($turno->save()) ? 'Registro turno ok' : 'Fallo');
+            }
         }
-
         $response->getBody()->write($rta);
         return $response;
     }
