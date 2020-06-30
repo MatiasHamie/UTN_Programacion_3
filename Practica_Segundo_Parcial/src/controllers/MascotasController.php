@@ -12,9 +12,14 @@ class MascotasController {
     public function registrarMascota(Request $request, Response $response, $args){
         $mascota = new Mascota();
 
-        $mascota->nombre = $_POST['nombre'];
-        $mascota->edad = $_POST['edad'];
-        $mascota->cliente_id = $_POST['id_cliente'];
+        $datos = $request->getParsedBody();
+
+        // $mascota->nombre = $_POST['nombre'];
+        // $mascota->edad = $_POST['edad'];
+        // $mascota->cliente_id = $_POST['id_cliente'];
+        $mascota->nombre = $datos['nombre'];
+        $mascota->edad = $datos['edad'];
+        $mascota->cliente_id = $datos['id_cliente'];
 
         $rta = RtaJsend::JsendResponse('Registro Mascota',($mascota->save()) ? 'Ok' : 'Fallo');
         $response->getBody()->write($rta);
@@ -23,13 +28,15 @@ class MascotasController {
 
     public function verHistorialMascota(Request $request, Response $response, $args){
         $mascota = new Mascota();
+        $mascota->id = $args;
 
         // Dia de hoy
         $zone=3600 * -3;
         $fechaActual = gmdate('d/m/Y', time() + $zone);
 
-        $historialTurnosSQL = Mascota::select('mascotas.nombre','mascotas.edad','turnos.fecha')
-        ->join('turnos','turnos.mascota_id','mascotas.id')
+        $historialTurnosSQL = Mascota::select('mascotas.nombre','mascotas.edad','turnos.fecha')    
+        ->join('turnos','turnos.mascota_id','mascotas.id')    
+        ->where('mascotas.id',$mascota->id)
         ->where('turnos.fecha','<=',$fechaActual)
         ->get();
 
