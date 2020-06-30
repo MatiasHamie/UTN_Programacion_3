@@ -118,18 +118,18 @@ class TurnosController {
             ->join('tipo','tipo.id','usuarios.tipo')
             ->where('usuarios.id',$id_usuario)
             ->get();
-            $tipo = $tipoClienteSQL[0]['1'];
+            $tipo = $tipoClienteSQL[0];
             var_dump ($tipo);
             if($tipo == 2){
                 // Selecciono las columnas q quiero mostrar al usuario
-                $turnosRegistradosSQL = Mascota::select('usuarios.email','mascotas.nombre','mascotas.edad','fecha')
+                $turnosRegistradosSQL = Mascota::select('usuarios.email','mascotas.nombre','mascotas.edad','mascotas.fecha')
                     // Uno una tabla con otra
                     ->join('turnos','turnos.mascota_id','mascotas.id')
                     ->join('usuarios','usuarios.id','mascotas.cliente_id')
                     // filtro por el id q ingresa en la url el usuario
                     ->where('cliente_id', $id_usuario)
                     // Agrupa para q no hayan duplicados
-                    ->groupBy('fecha','mascotas.nombre','usuarios.email','mascotas.nombre')
+                    ->groupBy('mascotas.fechafecha','mascotas.nombre','usuarios.email','mascotas.nombre')
                     ->get();
                 // ->join('usuarios.id','=',12);
                 $turnosRegistradosSQL = json_decode(str_replace('nombre','nombre_mascota',$turnosRegistradosSQL));
